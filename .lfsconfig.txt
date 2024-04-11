@@ -1,0 +1,2 @@
+[lfs]
+	url = https://git.happytanuki.kr/happytanuki/AndroidStudioProjects.git/info/lfs

@@ -17,7 +17,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var EditI2 : EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //git test
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
