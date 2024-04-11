@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="409dp"
+        android:layout_height="729dp"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp">
+
+        <TextView
+            android:id="@+id/Text1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Text1" />
+
+        <CheckBox
+            android:id="@+id/ChkAgree"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ChkAgree" />
+
+        <TextView
+            android:id="@+id/Text2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Text2" />
+
+        <RadioGroup
+            android:id="@+id/Rgroup1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/RdoDog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/RdoDog" />
+
+            <RadioButton
+                android:id="@+id/RdoCat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/RdoCat" />
+
+            <RadioButton
+                android:id="@+id/RdoRabbit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/RdoRabbit" />
+
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/BtnOK"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/BtnOK" />
+
+        <ImageView
+            android:id="@+id/ImgPet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
