@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Project4_1</string>
+    <string name="add_btn">더하기</string>
+    <string name="sub_btn">빼기</string>
+    <string name="mul_btn">곱하기</string>
+    <string name="div_btn">나누기</string>
+    <string name="result_prefix">계산 결과 : </string>
+</resources>

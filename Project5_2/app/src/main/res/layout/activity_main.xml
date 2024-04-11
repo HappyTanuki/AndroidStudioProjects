@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TableRow>
+                <EditText
+                    android:id="@+id/EditI1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_span="5"
+                    android:layout_weight="1">
+                </EditText>
+            </TableRow>
+            <TableRow>
+                <EditText
+                    android:id="@+id/EditI2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_span="5"
+                    android:layout_weight="1">
+                </EditText>
+            </TableRow>
+            <TableRow>
+
+                <Button
+                    android:id="@+id/numBtn0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="0" />
+
+                <Button
+                    android:id="@+id/numBtn1"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="1" />
+
+                <Button
+                    android:id="@+id/numBtn2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="2" />
+                <Button
+                    android:id="@+id/numBtn3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="3" />
+                <Button
+                    android:id="@+id/numBtn4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="4" />
+            </TableRow>
+            <TableRow>
+                <Button
+                    android:id="@+id/numBtn5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="5" />
+                <Button
+                    android:id="@+id/numBtn6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="6" />
+                <Button
+                    android:id="@+id/numBtn7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="7" />
+                <Button
+                    android:id="@+id/numBtn8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="8" />
+                <Button
+                    android:id="@+id/numBtn9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="9" />
+            </TableRow>
+            <TableRow>
+                <Button
+                    android:id="@+id/addnumBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_span="5"
+                    android:layout_weight="1"
+                    android:text="@string/add_btn">
+                </Button>
+            </TableRow>
+            <TableRow>
+                <Button
+                    android:id="@+id/subnumBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_span="5"
+                    android:layout_weight="1"
+                    android:text="@string/sub_btn">
+                </Button>
+            </TableRow>
+            <TableRow>
+                <Button
+                    android:id="@+id/mulnumBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_span="5"
+                    android:layout_weight="1"
+                    android:text="@string/mul_btn">
+                </Button>
+            </TableRow>
+            <TableRow>
+                <Button
+                    android:id="@+id/divnumBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_span="5"
+                    android:layout_weight="1"
+                    android:text="@string/div_btn">
+                </Button>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:id="@+id/ResultView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="40sp"
+                    android:layout_span="5"
+                    android:layout_weight="1"
+                    android:text="@string/result_prefix"/>
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
