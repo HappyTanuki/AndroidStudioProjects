@@ -1,8 +1,6 @@
 package com.cookandroid.project4_2
 
 import android.os.Bundle
-import android.provider.MediaStore.Audio.Radio
-import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageView
@@ -16,15 +14,15 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
-    lateinit var text1 : TextView
-    lateinit var text2 : TextView
-    lateinit var chkAgree : CheckBox
-    lateinit var rGroup1 : RadioGroup
-    lateinit var rdoDog : RadioButton
-    lateinit var rdoCat : RadioButton
-    lateinit var rdoRabbit : RadioButton
-    lateinit var btnOK : Button
-    lateinit var imgPet : ImageView
+    private lateinit var text1 : TextView
+    private lateinit var text2 : TextView
+    private lateinit var chkAgree : CheckBox
+    private lateinit var rGroup1 : RadioGroup
+    private lateinit var rdoDog : RadioButton
+    private lateinit var rdoCat : RadioButton
+    private lateinit var rdoRabbit : RadioButton
+    private lateinit var btnOK : Button
+    private lateinit var imgPet : ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.RdoDog -> imgPet.setImageResource(R.drawable.dog)
                 R.id.RdoCat -> imgPet.setImageResource(R.drawable.cat)
                 R.id.RdoRabbit -> imgPet.setImageResource(R.drawable.rabbit)
-                else -> Toast.makeText(applicationContext, "동물 먼저 선택하세요",
+                else -> Toast.makeText(applicationContext, "동물 먼저 선택 하세요.",
                     Toast.LENGTH_SHORT).show()
             }
         }
