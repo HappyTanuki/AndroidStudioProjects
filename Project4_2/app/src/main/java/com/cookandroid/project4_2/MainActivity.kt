@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -33,6 +34,26 @@ class MainActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        text1 = findViewById(R.id.Text1)
+        text2 = findViewById(R.id.Text2)
+        chkAgree = findViewById(R.id.ChkAgree)
+        rGroup1 = findViewById(R.id.Rgroup1)
+        rdoDog = findViewById(R.id.RdoDog)
+        rdoCat = findViewById(R.id.RdoCat)
+        rdoRabbit = findViewById(R.id.RdoRabbit)
+        btnOK = findViewById(R.id.BtnOK)
+        imgPet = findViewById(R.id.ImgPet)
+
+        btnOK.setOnClickListener {
+            when (rGroup1.checkedRadioButtonId) {
+                R.id.RdoDog -> imgPet.setImageResource(R.drawable.dog)
+                R.id.RdoCat -> imgPet.setImageResource(R.drawable.cat)
+                R.id.RdoRabbit -> imgPet.setImageResource(R.drawable.rabbit)
+                else -> Toast.makeText(applicationContext, "동물 먼저 선택하세요",
+                    Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }
