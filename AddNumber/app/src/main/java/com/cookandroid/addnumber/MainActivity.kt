@@ -33,9 +33,19 @@ class MainActivity : AppCompatActivity() {
 
         mBinding.button.setOnClickListener {
             val intent = Intent(applicationContext, SecondActivity::class.java)
-            val n = arrayOf(Integer.parseInt(mBinding.editTextText.text.toString()),
-                Integer.parseInt(mBinding.editTextText2.text.toString()))
-            intent.putExtra("N", n)
+            intent.putExtra("N1", Integer.parseInt(mBinding.editTextText.text.toString()))
+            intent.putExtra("N2", Integer.parseInt(mBinding.editTextText2.text.toString()))
+            if (mBinding.radioButton.isChecked) {
+                intent.putExtra("op", "+")
+            } else if (mBinding.radioButton2.isChecked) {
+                intent.putExtra("op", "-")
+            } else if (mBinding.radioButton3.isChecked) {
+                intent.putExtra("op", "*")
+            } else if (mBinding.radioButton4.isChecked) {
+                intent.putExtra("op", "/")
+            } else {
+                return@setOnClickListener
+            }
             activityResultLauncher.launch(intent)
         }
     }
