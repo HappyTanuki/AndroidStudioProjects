@@ -24,12 +24,16 @@ class MainActivity : AppCompatActivity() {
         }
         var spinner : Spinner = findViewById(R.id.spinner1)
         var adapter : ArrayAdapter<String>
-        var movies = arrayOf("T1", "T2", "짱구 극장판", "T4")
+        var movies = arrayOf("선택하세요", "명량", "기생충", "짱구 극장판", "T4")
         adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, movies)
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                var imageview: ImageView = findViewById(R.id.imageView)
+                val imageview: ImageView = findViewById(R.id.imageView)
                 when (movies[p2]) {
+                    "명량" ->
+                        imageview.setImageResource(R.drawable.sea)
+                    "기생충" ->
+                        imageview.setImageResource(R.drawable.parasite)
                     "짱구 극장판" ->
                         imageview.setImageResource(R.drawable.jjang)
                     else ->
