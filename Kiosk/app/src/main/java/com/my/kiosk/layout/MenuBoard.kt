@@ -1,12 +1,11 @@
 package com.my.kiosk.layout
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -16,9 +15,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.valentinilk.shimmer.shimmer
+import androidx.compose.ui.unit.dp
+import com.my.kiosk.MenuEntityData
+import com.my.kiosk.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -30,6 +30,7 @@ class MenuBoard {
     @Composable
     operator fun invoke() {
         val pages = listOf("페이지1", "페이지2", "페이지3")
+        val it0 = MenuEntity()
 
         pagerState = rememberPagerState(
             pageCount = { pages.size },
@@ -47,14 +48,17 @@ class MenuBoard {
             ) {
                 pages.forEachIndexed { index, title ->
                     Tab(
-                        content = { Text(text = title) },
                         selected = pagerState.currentPage == index,
                         onClick = {
                             coroutineScope.launch {
                                 pagerState.scrollToPage(index)
                             }
                         }
-                    )
+                    ){
+                        Text(text = title,
+                            modifier = Modifier
+                                .padding(10.dp))
+                    }
                 }
 
             }
@@ -64,10 +68,22 @@ class MenuBoard {
                     .fillMaxSize()
             ) {page ->
                 LoadingEntity(false) {
-                    Text(
-                        text = "Page: $page",
-                        modifier = Modifier.wrapContentSize()
-                    )
+                    LazyColumn(){
+                        items(
+                            count = 1000000,
+                            itemContent = {
+                                it0(MenuEntityData(
+                                    R.drawable.profile,
+                                    "HappyTanuki",
+                                    it
+                                ))
+                            }
+                        )
+                    }
+//                    Text(
+//                        text = "Page: $page",
+//                        modifier = Modifier.wrapContentSize()
+//                    )
                 }
             }
         }
