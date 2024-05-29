@@ -47,18 +47,18 @@ import kotlinx.coroutines.launch
 fun MenuBoard(
     menuClass: List<MenuEntityDataClass>,
     menuEntityList: MutableState<List<MutableList<Beverage>>>,
-    shoppingcart: MutableState<List<Beverage>>) {
+    shoppingCart: MutableState<List<Beverage>>) {
     val pagerState = rememberPagerState(
         pageCount = { menuClass.size },
         initialPage = 0
     )
     val coroutineScope = rememberCoroutineScope()
 
-    var showDialog = remember { mutableStateOf(false) }
-    var focusedMenuItem = remember { mutableStateOf<Beverage?>(null) }
+    val showDialog = remember { mutableStateOf(false) }
+    val focusedMenuItem = remember { mutableStateOf<Beverage?>(null) }
 
     if (showDialog.value)
-        MenuItemClickDialog(focusedMenuItem, shoppingCart, focusedMenuItemIcedorHot, showDialog)
+        MenuItemClickDialog(focusedMenuItem, shoppingCart, showDialog)
 
     Column(
         modifier = Modifier

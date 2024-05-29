@@ -22,69 +22,131 @@ interface MenuEntityData {
     ): List<MenuOptionsData>
 }
 interface Beverage {
-    var dataClass: MenuEntityDataClass
-    var imgURL: String
+    val dataClass: MenuEntityDataClass
+    val imgURL: String
     val name: String
-    val quantity: Int
+    var quantity: Int
     val price: Int
-    fun setDataClass(classData: MenuEntityDataClass) { dataClass = classData }
-    fun setImgURL(uRL: String) { imgURL = uRL }
-    fun getImgURL(): String = imgURL
-    fun getName(): String = name
-    fun getQuantity(): Int = quantity
-    fun getPrice(): Int = price
-    fun getOptions(): List<Beverage>
+    var superBeverage: Beverage?
+    val options: List<Beverage>
+        get() = emptyList()
 }
 class Coffee(
     override var dataClass: MenuEntityDataClass,
     override var imgURL: String,
     override val name: String,
-    override val quantity: Int,
-    override val price: Int
+    override var quantity: Int,
+    override val price: Int,
+    override var superBeverage: Beverage? = null
 ) : Beverage {
-    override fun getOptions(): List<Beverage> {
-        return emptyList()
+}
+abstract class BeverageDecorator(
+    override var superBeverage: Beverage?
+): Beverage {
+    override val dataClass: MenuEntityDataClass = superBeverage!!.dataClass
+    override val imgURL: String  = superBeverage!!.imgURL
+    override val name: String = superBeverage!!.name
+    override var quantity: Int = superBeverage!!.quantity
+    override val price: Int = superBeverage!!.price
+}
+class BeverageAddPurl(
+    override var superBeverage: Beverage?
+): BeverageDecorator(superBeverage) {
+    override val name: String
+        get() {
+            return "${superBeverage!!.name} 펄추가"
+        }
+
+    override val price: Int
+        get() {
+            return superBeverage!!.price + 100
+        }
+
+    override val options: List<Beverage>
+        get() {
+            return superBeverage!!.options + listOf(this)
+        }
+}
+
+class BeverageAddShot(
+    override var superBeverage: Beverage?
+): BeverageDecorator(superBeverage) {
+    override val name: String
+        get() {
+            return "${superBeverage!!.name} 샷추가"
+        }
+
+    override val price: Int
+        get() {
+            return superBeverage!!.price + 100
+        }
+
+    override val options: List<Beverage>
+        get() {
+            return superBeverage!!.options + listOf(this)
+        }
+}
+
+class BeverageAddIce(
+    override var superBeverage: Beverage?
+): BeverageDecorator(superBeverage) {
+    override val name: String
+        get() {
+            return "${superBeverage!!.name} 얼음추가"
+        }
+
+    override val price: Int
+        get() {
+            return superBeverage!!.price
+        }
+
+    override val options: List<Beverage>
+        get() {
+            return superBeverage!!.options + listOf(this)
+        }
+}
+
+class HotBeverage(
+    override var superBeverage: Beverage?
+): BeverageDecorator(superBeverage) {
+    override val name: String
+        get() {
+            return "뜨거운 ${superBeverage!!.name}"
+        }
+
+    override val price: Int
+        get() {
+            return superBeverage!!.price
+        }
+
+    override val options: List<Beverage>
+        get() {
+            return superBeverage!!.options + listOf(this)
+        }
+}
+
+fun beverageDecoratorTypegetter(beverage: Beverage): Int {
+    when (beverage) {
+        is BeverageAddPurl -> return 0
+        is BeverageAddShot -> return 1
+        is BeverageAddIce -> return 2
+        is HotBeverage -> return 3
+        else -> return -1
     }
 }
-abstract class CoffeeDecorator(
-    private val coffee: Coffee
-): Beverage by coffee
-class CoffeePurl(
-    coffee: Coffee
-): CoffeeDecorator(coffee) {
-    override fun getName(): String {
-        return "${super.name} 펄추가"
+
+fun beverageDecoratorRemover(
+    beverage: Beverage,
+    beverageDecorator: BeverageDecorator): Boolean {
+    var curBeverage: Beverage = beverage
+    if (curBeverage.superBeverage == null)
+        return false
+    while (curBeverage.superBeverage != null) {
+        val nextBeverage: Beverage = curBeverage.superBeverage!!
+        if (beverageDecoratorTypegetter(curBeverage) == beverageDecoratorTypegetter(beverageDecorator)) {
+            curBeverage.superBeverage = nextBeverage.superBeverage
+            curBeverage = nextBeverage.superBeverage!!
+        }
     }
-    override fun getPrice(): Int {
-        return super.price + 100
-    }
-    override fun getOptions(): List<Beverage> {
-        return super.getOptions() + listOf(this)
-    }
-}
-class CoffeeShot(
-    coffee: Coffee
-): CoffeeDecorator(coffee) {
-    override fun getName(): String {
-        return "${super.name} 샷추가"
-    }
-    override fun getPrice(): Int {
-        return super.price + 100
-    }
-    override fun getOptions(): List<Beverage> {
-        return super.getOptions() + listOf(this)
-    }
-}
-class CoffeeIce(
-    coffee: Coffee
-): CoffeeDecorator(coffee) {
-    override fun getName(): String {
-        return "${super.name} 얼음추가"
-    }
-    override fun getPrice(): Int {
-        return super.price
-    }
-    override fun getOptions(): List<Beverage> {
-        return super.getOptions() + listOf(this)
-    }
+    return true
 }

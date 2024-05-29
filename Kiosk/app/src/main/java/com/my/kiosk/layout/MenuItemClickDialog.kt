@@ -24,14 +24,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.my.kiosk.Beverage
+import com.my.kiosk.BeverageAddIce
+import com.my.kiosk.Coffee
+import com.my.kiosk.HotBeverage
 import com.my.kiosk.MenuEntityData
 import com.my.kiosk.MenuEntityDataClass
+import com.my.kiosk.beverageDecoratorRemover
 
 @Composable
 fun MenuItemClickDialog(
-    focusedMenuItem: MutableState<MenuEntityData>,
-    shoppingcart: MutableState<List<Beverage>>,
-    focusedMenuItemIcedorHot: MutableState<Boolean> = mutableStateOf(true),
+    focusedMenuItem: MutableState<Beverage?>,
+    shoppingCart: MutableState<List<Beverage>>,
     showDialog: MutableState<Boolean> = mutableStateOf(true)
 ) {
     var icedEnabled = remember { mutableStateOf(true) }
@@ -51,13 +54,23 @@ fun MenuItemClickDialog(
                 MenuEntity(
                     modifier = Modifier
                         .requiredHeight(200.dp),
-                    data = focusedMenuItem.value
+                    data = focusedMenuItem.value ?: Coffee(
+                        dataClass = MenuEntityDataClass(
+                            name= "",
+                            id= 0
+                        ),
+                        imgURL = "",
+                        name= "",
+                        price= 0,
+                        quantity = 0
+                    )
                 )
                 Row {
                     if (icedEnabled.value) {
                         Button(
                             onClick = {
-                                focusedMenuItemIcedorHot.value = true
+                                beverageDecoratorRemover(focusedMenuItem.value!!, HotBeverage(focusedMenuItem.value))
+                                focusedMenuItem.value = BeverageAddIce(focusedMenuItem.value!!)
                                 hotEnabled.value = false
                                 icedEnabled.value = true
                             }, modifier = Modifier,
@@ -69,7 +82,8 @@ fun MenuItemClickDialog(
                     else {
                         Button(
                             onClick = {
-                                focusedMenuItemIcedorHot.value = true
+                                beverageDecoratorRemover(focusedMenuItem.value!!, HotBeverage(focusedMenuItem.value))
+                                focusedMenuItem.value = BeverageAddIce(focusedMenuItem.value!!)
                                 icedEnabled.value = true
                                 hotEnabled.value = false
                             }, modifier = Modifier,
@@ -84,7 +98,8 @@ fun MenuItemClickDialog(
                     if (hotEnabled.value) {
                         Button(
                             onClick = {
-                                focusedMenuItemIcedorHot.value = false
+                                beverageDecoratorRemover(focusedMenuItem.value!!, BeverageAddIce(focusedMenuItem.value!!))
+                                focusedMenuItem.value = HotBeverage(focusedMenuItem.value)
                                 icedEnabled.value = false
                                 hotEnabled.value = true
                             }, modifier = Modifier,
@@ -96,7 +111,8 @@ fun MenuItemClickDialog(
                     else {
                         Button(
                             onClick = {
-                                focusedMenuItemIcedorHot.value = false
+                                beverageDecoratorRemover(focusedMenuItem.value!!, BeverageAddIce(focusedMenuItem.value!!))
+                                focusedMenuItem.value = HotBeverage(focusedMenuItem.value)
                                 hotEnabled.value = true
                                 icedEnabled.value = false
                             }, modifier = Modifier,
@@ -112,9 +128,12 @@ fun MenuItemClickDialog(
                 Button(
                     onClick = {
                         if ((icedEnabled.value && !hotEnabled.value) || (!icedEnabled.value && hotEnabled.value)) {
-                            var temp = focusedMenuItem.value
-                            temp.iced = focusedMenuItemIcedorHot.value
-                            shoppingCart.value = shoppingCart.value + focusedMenuItem.value
+                            val item = shoppingCart.value.find{it.imgURL == focusedMenuItem.value!!.imgURL}
+                            if (item != null)
+                                item.quantity += 1
+                            else {
+                                shoppingCart.value += focusedMenuItem.value!!
+                            }
                             showDialog.value = false
                         }
                     }, modifier = Modifier

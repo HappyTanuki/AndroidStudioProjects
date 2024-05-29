@@ -1013,7 +1013,7 @@ class MenuActivity : ComponentActivity() {
                 }
             ) }
 
-            val shoppingcart: MutableState<List<Beverage>> = remember {
+            val shoppingCart: MutableState<List<Beverage>> = remember {
                 mutableStateOf(listOf<Beverage>())
             }
 
@@ -1025,7 +1025,7 @@ class MenuActivity : ComponentActivity() {
                 MenuBoard(
                     menuEntityDataClass,
                     menuEntityList,
-                    shoppingcart
+                    shoppingCart
                 )
             }
         }

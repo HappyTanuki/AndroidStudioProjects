@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.my.kiosk.Beverage
 import com.my.kiosk.MenuEntityData
 import com.my.kiosk.MenuEntityDataClass
 import com.my.kiosk.R
@@ -35,7 +36,7 @@ import java.time.LocalDateTime
 @Composable
 fun MenuEntity(
     modifier: Modifier = Modifier,
-    data: MenuEntityData
+    data: Beverage
     ) {
     Column(
         modifier = modifier
@@ -44,15 +45,15 @@ fun MenuEntity(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LoadingEntity(modifier = Modifier.weight(5f), !data.loaded) {
+        LoadingEntity(modifier = Modifier.weight(5f), false) {
             AsyncImage(
                 modifier = Modifier
                     .weight(3f),
-                model = data.url,
+                model = data.imgURL,
                 contentDescription = data.name
             )
         }
-        LoadingEntity(modifier = Modifier.weight(3f), !data.loaded) {
+        LoadingEntity(modifier = Modifier.weight(3f), false) {
             Text(
                 text = data.name,
                 fontSize = 10.sp,
@@ -63,7 +64,7 @@ fun MenuEntity(
                 textAlign = TextAlign.Center
             )
         }
-        LoadingEntity(modifier = Modifier.weight(3f), !data.loaded) {
+        LoadingEntity(modifier = Modifier.weight(3f), false) {
             Text(
                 text = "₩${data.price}",
                 fontSize = 10.sp,
@@ -75,22 +76,22 @@ fun MenuEntity(
         }
     }
 }
-@Preview(showBackground = true)
-@Composable
-fun MenuEntityPreview() {
-    MenuEntity(
-        modifier = Modifier
-            .requiredSize(100.dp, 150.dp),
-        MenuEntityData(
-            MenuEntityDataClass(
-                "class1",
-                0
-            ),
-            true,
-            "R.drawable.profile",
-            "HappyTanuki",
-            10000,
-            true
-        )
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun MenuEntityPreview() {
+//    MenuEntity(
+//        modifier = Modifier
+//            .requiredSize(100.dp, 150.dp),
+//        MenuEntityData(
+//            MenuEntityDataClass(
+//                "class1",
+//                0
+//            ),
+//            true,
+//            "R.drawable.profile",
+//            "HappyTanuki",
+//            10000,
+//            true
+//        )
+//    )
+//}
