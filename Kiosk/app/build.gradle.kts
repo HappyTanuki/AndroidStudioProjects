@@ -74,4 +74,5 @@ dependencies {
 
     implementation(libs.compose.shimmer)
     implementation(libs.coil.compose)
+    implementation(libs.gson)
 }

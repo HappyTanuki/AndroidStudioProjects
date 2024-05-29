@@ -35,19 +35,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.my.kiosk.Beverage
-import com.my.kiosk.MenuEntityData
 import com.my.kiosk.MenuEntityDataClass
 import kotlinx.coroutines.launch
+import kotlin.time.times
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MenuBoard(
     menuClass: List<MenuEntityDataClass>,
-    menuEntityList: MutableState<List<MutableList<Beverage>>>,
-    shoppingCart: MutableState<List<Beverage>>) {
+    menuEntityList: MutableState<List<MutableList<MutableState<Beverage>>>>,
+    shoppingCart: MutableState<List<MutableState<Beverage>>>) {
     val pagerState = rememberPagerState(
         pageCount = { menuClass.size },
         initialPage = 0
@@ -55,10 +54,11 @@ fun MenuBoard(
     val coroutineScope = rememberCoroutineScope()
 
     val showDialog = remember { mutableStateOf(false) }
+    val showEditDialog = remember { mutableStateOf(false) }
     val focusedMenuItem = remember { mutableStateOf<Beverage?>(null) }
 
     if (showDialog.value)
-        MenuItemClickDialog(focusedMenuItem, shoppingCart, showDialog)
+        MenuItemClickDialog(showEditDialog, focusedMenuItem.value, shoppingCart, showDialog)
 
     Column(
         modifier = Modifier
@@ -103,12 +103,12 @@ fun MenuBoard(
                     columns = GridCells.Fixed(4)
                 ) {
                     items(menuEntityList.value[page]) {
-                        if (it.dataClass.id == page) {
+                        if (it.value.dataClass.id == page) {
                             MenuEntity(
                                 modifier = Modifier
                                     .clickable {
                                         showDialog.value = true
-                                        focusedMenuItem.value = it
+                                        focusedMenuItem.value = it.value
                                     }
                                     .requiredHeight(200.dp),
                                 data = it
@@ -134,42 +134,12 @@ fun MenuBoard(
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = rememberRipple(bounded = true)
-                            ) {},
-                        it
-                    )
-                }
-            }
-            Column(
-                modifier = Modifier
-                    .weight(0.5f)
-            ) {
-                Button(
-                    shape = RoundedCornerShape(10.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Red
-                        ),
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    onClick = {}
-                ){
-                    Text(
-                        color = Color.Black,
-                        text = "삭제"
-                    )
-                }
-                Button(
-                    shape = RoundedCornerShape(10.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Gray,
-                        disabledContainerColor = Color.DarkGray
-                        ),
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    onClick = {}
-                ){
-                    Text(
-                        color = Color.Black,
-                        text = "수정"
+                            ) {
+                                showEditDialog.value = true
+                                showDialog.value = true
+                                focusedMenuItem.value = it.value
+                              },
+                        data = it
                     )
                 }
             }
@@ -183,11 +153,12 @@ fun MenuBoard(
             modifier = Modifier
                 .weight(0.7f)
                 .fillMaxWidth(),
-            onClick = {}
+            onClick = {
+            }
         ){
             var totalPrice: Long= 0
             shoppingCart.value.forEach {data ->
-                totalPrice += data.price
+                totalPrice += data.value.price * data.value.quantity.value
             }
             Text(
                 color = Color.Black,

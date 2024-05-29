@@ -1,5 +1,7 @@
 package com.my.kiosk
 
+import androidx.compose.runtime.MutableState
+
 data class MenuEntityDataClass(
     val name: String,
     val id: Int
@@ -25,17 +27,17 @@ interface Beverage {
     val dataClass: MenuEntityDataClass
     val imgURL: String
     val name: String
-    var quantity: Int
+    var quantity: MutableState<Int>
     val price: Int
     var superBeverage: Beverage?
-    val options: List<Beverage>
-        get() = emptyList()
+    val options: MutableList<Beverage>
+        get() = mutableListOf<Beverage>()
 }
 class Coffee(
     override var dataClass: MenuEntityDataClass,
     override var imgURL: String,
     override val name: String,
-    override var quantity: Int,
+    override var quantity: MutableState<Int>,
     override val price: Int,
     override var superBeverage: Beverage? = null
 ) : Beverage {
@@ -43,11 +45,24 @@ class Coffee(
 abstract class BeverageDecorator(
     override var superBeverage: Beverage?
 ): Beverage {
-    override val dataClass: MenuEntityDataClass = superBeverage!!.dataClass
-    override val imgURL: String  = superBeverage!!.imgURL
-    override val name: String = superBeverage!!.name
-    override var quantity: Int = superBeverage!!.quantity
-    override val price: Int = superBeverage!!.price
+    override val dataClass: MenuEntityDataClass
+        get() {
+            return superBeverage!!.dataClass
+        }
+    override var imgURL: String = ""
+        set(value) {
+            field = value
+        }
+        get() {
+            return superBeverage!!.imgURL
+        }
+    override var quantity: MutableState<Int>
+        set(value) {
+            superBeverage!!.quantity = value
+        }
+        get() {
+            return superBeverage!!.quantity
+        }
 }
 class BeverageAddPurl(
     override var superBeverage: Beverage?
@@ -62,9 +77,10 @@ class BeverageAddPurl(
             return superBeverage!!.price + 100
         }
 
-    override val options: List<Beverage>
+    override val options: MutableList<Beverage>
         get() {
-            return superBeverage!!.options + listOf(this)
+            superBeverage!!.options.add(this)
+            return superBeverage!!.options
         }
 }
 
@@ -81,9 +97,10 @@ class BeverageAddShot(
             return superBeverage!!.price + 100
         }
 
-    override val options: List<Beverage>
+    override val options: MutableList<Beverage>
         get() {
-            return superBeverage!!.options + listOf(this)
+            superBeverage!!.options.add(this)
+            return superBeverage!!.options
         }
 }
 
@@ -100,9 +117,10 @@ class BeverageAddIce(
             return superBeverage!!.price
         }
 
-    override val options: List<Beverage>
+    override val options: MutableList<Beverage>
         get() {
-            return superBeverage!!.options + listOf(this)
+            superBeverage!!.options.add(this)
+            return superBeverage!!.options
         }
 }
 
@@ -119,9 +137,10 @@ class HotBeverage(
             return superBeverage!!.price
         }
 
-    override val options: List<Beverage>
+    override val options: MutableList<Beverage>
         get() {
-            return superBeverage!!.options + listOf(this)
+            superBeverage!!.options.add(this)
+            return superBeverage!!.options
         }
 }
 
@@ -137,16 +156,17 @@ fun beverageDecoratorTypegetter(beverage: Beverage): Int {
 
 fun beverageDecoratorRemover(
     beverage: Beverage,
-    beverageDecorator: BeverageDecorator): Boolean {
-    var curBeverage: Beverage = beverage
-    if (curBeverage.superBeverage == null)
-        return false
-    while (curBeverage.superBeverage != null) {
-        val nextBeverage: Beverage = curBeverage.superBeverage!!
-        if (beverageDecoratorTypegetter(curBeverage) == beverageDecoratorTypegetter(beverageDecorator)) {
-            curBeverage.superBeverage = nextBeverage.superBeverage
-            curBeverage = nextBeverage.superBeverage!!
-        }
+    beverageDecorator: BeverageDecorator): Beverage {
+
+    if (beverage.superBeverage == null)
+        return beverage
+
+    val curBeverage = beverageDecoratorRemover(beverage.superBeverage!!, beverageDecorator)
+
+    return if (beverageDecoratorTypegetter(curBeverage) == beverageDecoratorTypegetter(beverageDecorator)) {
+        curBeverage.superBeverage!!
     }
-    return true
+    else {
+        curBeverage
+    }
 }

@@ -1,5 +1,6 @@
 package com.my.kiosk.layout
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,26 +20,33 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.google.gson.Gson
 import com.my.kiosk.Beverage
 import com.my.kiosk.BeverageAddIce
 import com.my.kiosk.Coffee
 import com.my.kiosk.HotBeverage
-import com.my.kiosk.MenuEntityData
-import com.my.kiosk.MenuEntityDataClass
 import com.my.kiosk.beverageDecoratorRemover
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun MenuItemClickDialog(
-    focusedMenuItem: MutableState<Beverage?>,
-    shoppingCart: MutableState<List<Beverage>>,
+    edit: MutableState<Boolean>,
+    focusedItem: Beverage?,
+    shoppingCart: MutableState<List<MutableState<Beverage>>>,
     showDialog: MutableState<Boolean> = mutableStateOf(true)
 ) {
-    var icedEnabled = remember { mutableStateOf(true) }
-    var hotEnabled = remember { mutableStateOf(true) }
+    var itemToAdd: Beverage
+
+    if (edit.value)
+        itemToAdd = focusedItem!!
+    else
+        itemToAdd =
+
+    val icedEnabled = remember { mutableStateOf(true) }
+    val hotEnabled = remember { mutableStateOf(true) }
 
     Dialog(onDismissRequest = {}) {
         Surface(
@@ -54,23 +62,13 @@ fun MenuItemClickDialog(
                 MenuEntity(
                     modifier = Modifier
                         .requiredHeight(200.dp),
-                    data = focusedMenuItem.value ?: Coffee(
-                        dataClass = MenuEntityDataClass(
-                            name= "",
-                            id= 0
-                        ),
-                        imgURL = "",
-                        name= "",
-                        price= 0,
-                        quantity = 0
-                    )
+                    data = mutableStateOf<Beverage>(itemToAdd)
                 )
                 Row {
                     if (icedEnabled.value) {
                         Button(
                             onClick = {
-                                beverageDecoratorRemover(focusedMenuItem.value!!, HotBeverage(focusedMenuItem.value))
-                                focusedMenuItem.value = BeverageAddIce(focusedMenuItem.value!!)
+                                itemToAdd = BeverageAddIce(beverageDecoratorRemover(itemToAdd, HotBeverage(itemToAdd)))
                                 hotEnabled.value = false
                                 icedEnabled.value = true
                             }, modifier = Modifier,
@@ -82,8 +80,7 @@ fun MenuItemClickDialog(
                     else {
                         Button(
                             onClick = {
-                                beverageDecoratorRemover(focusedMenuItem.value!!, HotBeverage(focusedMenuItem.value))
-                                focusedMenuItem.value = BeverageAddIce(focusedMenuItem.value!!)
+                                itemToAdd = BeverageAddIce(beverageDecoratorRemover(itemToAdd, HotBeverage(itemToAdd)))
                                 icedEnabled.value = true
                                 hotEnabled.value = false
                             }, modifier = Modifier,
@@ -98,8 +95,7 @@ fun MenuItemClickDialog(
                     if (hotEnabled.value) {
                         Button(
                             onClick = {
-                                beverageDecoratorRemover(focusedMenuItem.value!!, BeverageAddIce(focusedMenuItem.value!!))
-                                focusedMenuItem.value = HotBeverage(focusedMenuItem.value)
+                                itemToAdd = HotBeverage(beverageDecoratorRemover(itemToAdd, BeverageAddIce(itemToAdd)))
                                 icedEnabled.value = false
                                 hotEnabled.value = true
                             }, modifier = Modifier,
@@ -111,8 +107,7 @@ fun MenuItemClickDialog(
                     else {
                         Button(
                             onClick = {
-                                beverageDecoratorRemover(focusedMenuItem.value!!, BeverageAddIce(focusedMenuItem.value!!))
-                                focusedMenuItem.value = HotBeverage(focusedMenuItem.value)
+                                itemToAdd = HotBeverage(beverageDecoratorRemover(itemToAdd, BeverageAddIce(itemToAdd)))
                                 hotEnabled.value = true
                                 icedEnabled.value = false
                             }, modifier = Modifier,
@@ -127,21 +122,42 @@ fun MenuItemClickDialog(
                 }
                 Button(
                     onClick = {
-                        if ((icedEnabled.value && !hotEnabled.value) || (!icedEnabled.value && hotEnabled.value)) {
-                            val item = shoppingCart.value.find{it.imgURL == focusedMenuItem.value!!.imgURL}
-                            if (item != null)
-                                item.quantity += 1
-                            else {
-                                shoppingCart.value += focusedMenuItem.value!!
+                        if (edit.value) {
+                            if ((icedEnabled.value && !hotEnabled.value) || (!icedEnabled.value && hotEnabled.value)) {
+                                val item = shoppingCart.value.find {
+                                    it.value.imgURL == itemToAdd.imgURL
+                                }
+                                if (item != null) {
+                                    item.value = itemToAdd
+                                    showDialog.value = false
+                                }
                             }
-                            showDialog.value = false
+                            edit.value = false
+                        }
+                        else {
+                            if ((icedEnabled.value && !hotEnabled.value) || (!icedEnabled.value && hotEnabled.value)) {
+                                val item = shoppingCart.value.find {
+                                    it.value.imgURL == itemToAdd.imgURL && it.value.options == itemToAdd.options
+                                }
+                                if (item != null)
+                                    item.value.quantity.value += 1
+                                else {
+                                    shoppingCart.value += mutableStateOf<Beverage>(itemToAdd)
+                                }
+                                showDialog.value = false
+                            }
                         }
                     }, modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp),
                     shape = RoundedCornerShape(24.dp)
                 ) {
-                    Text("장바구니에 추가", fontSize = 16.sp)
+                    if (edit.value) {
+                        Text("정정", fontSize = 16.sp)
+                    }
+                    else {
+                        Text("장바구니에 추가", fontSize = 16.sp)
+                    }
                 }
             }
         }
