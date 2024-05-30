@@ -67,7 +67,7 @@ fun MenuBoard(
     ) {
         Column(
             modifier = Modifier
-                .weight(9f),
+                .weight(5f),
             verticalArrangement = Arrangement.Center
         ) {
             ScrollableTabRow(
@@ -118,11 +118,17 @@ fun MenuBoard(
                 }
             }
         }
-        Row(
+        Column(
             modifier = Modifier
                 .weight(2f)
-                .border(BorderStroke(2.dp, Color.Black))
+                .fillMaxWidth()
+                .border(BorderStroke(1.dp, Color.Gray))
         ) {
+            Text (
+                text = "장바구니",
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
             LazyRow(
                 modifier = Modifier
                     .weight(2f)
@@ -130,6 +136,7 @@ fun MenuBoard(
             ) {
                 items(shoppingCart.value) {
                     MenuEntity(
+                        isShoppingCart = true,
                         modifier = Modifier
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
@@ -158,7 +165,7 @@ fun MenuBoard(
         ){
             var totalPrice: Long= 0
             shoppingCart.value.forEach {data ->
-                totalPrice += data.value.price * data.value.quantity.value
+                totalPrice += (data.value.price.value + data.value.optPrice) * data.value.quantity.value
             }
             Text(
                 color = Color.Black,

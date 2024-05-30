@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.my.kiosk.MenuEntityData
 import com.my.kiosk.MenuEntityDataClass
 import com.my.kiosk.R
 import com.valentinilk.shimmer.shimmer

@@ -17,6 +17,7 @@ import com.my.kiosk.Beverage
 
 @Composable
 fun MenuEntity(
+    isShoppingCart: Boolean = false,
     modifier: Modifier = Modifier,
     data: MutableState<Beverage>
     ) {
@@ -31,10 +32,10 @@ fun MenuEntity(
             modifier = Modifier
                 .weight(3f),
             model = data.value.imgURL,
-            contentDescription = data.value.name
+            contentDescription = data.value.name.value
         )
         Text(
-            text = data.value.name,
+            text = data.value.name.value,
             fontSize = 10.sp,
             modifier = Modifier
                 .weight(1f)
@@ -43,13 +44,21 @@ fun MenuEntity(
             textAlign = TextAlign.Center
         )
         Text(
-            text = "₩${data.value.price * data.value.quantity.value}",
+            text = "₩${data.value.price.value + data.value.optPrice}",
             fontSize = 10.sp,
             modifier = Modifier
                 .weight(1f)
                 .padding(0.dp, 0.dp, 0.dp, 0.dp)
                 .wrapContentSize()
         )
+        if (isShoppingCart) {
+            Text(
+                text = "${data.value.quantity.value} 개",
+                fontSize = 10.sp,
+                modifier = Modifier
+                    .wrapContentSize()
+            )
+        }
     }
 }
 //@Preview(showBackground = true)
