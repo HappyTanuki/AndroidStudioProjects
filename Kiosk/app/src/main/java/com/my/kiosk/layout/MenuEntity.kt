@@ -8,8 +8,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -31,18 +33,22 @@ fun MenuEntity(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var name = mutableStateOf<String>("")
-        data.value.name.value.forEach {
-            name.value+=it
+        var _name: String = ""
+        var name by remember { mutableStateOf<String>("") }
+        LaunchedEffect(data.value.name.value) {
+            data.value.name.value.forEach {
+                _name += it
+            }
+            name = _name
         }
         AsyncImage(
             modifier = Modifier
                 .weight(3f),
             model = data.value.imgURL,
-            contentDescription = name.value
+            contentDescription = name
         )
         Text(
-            text = name.value,
+            text = name,
             fontSize = 10.sp,
             modifier = Modifier
                 .weight(1f)

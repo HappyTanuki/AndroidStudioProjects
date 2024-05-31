@@ -25,13 +25,13 @@ import com.my.kiosk.Beverage
 
 @Composable
 fun PaymentDialog(
-    shoppingCart: MutableState<List<MutableState<Beverage>>>,
+    shoppingCart: MutableList<Beverage>,
     showDialog: MutableState<Boolean>,
     transactionCompleted: MutableState<Boolean>
 ) {
     var constTotalValue: Int = 0
-    shoppingCart.value.forEach { data ->
-        constTotalValue += (data.value.price.value + data.value.optPrice) * data.value.quantity.value
+    shoppingCart.forEach { data ->
+        constTotalValue += (data.price.value + data.optPrice) * data.quantity.value
     }
     Dialog(onDismissRequest = {}) {
         Surface(

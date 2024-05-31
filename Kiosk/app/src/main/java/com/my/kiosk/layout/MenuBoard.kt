@@ -1,5 +1,6 @@
 package com.my.kiosk.layout
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
@@ -42,12 +43,13 @@ import com.my.kiosk.MenuEntityDataClass
 import kotlinx.coroutines.launch
 import kotlin.time.times
 
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MenuBoard(
     menuClass: List<MenuEntityDataClass>,
     menuEntityList: MutableState<List<MutableList<MutableState<Beverage>>>>,
-    shoppingCart: MutableState<List<MutableState<Beverage>>>,
+    shoppingCart: MutableList<Beverage>,
     transactionCompleted: MutableState<Boolean>
 ) {
     val pagerState = rememberPagerState(
@@ -60,10 +62,12 @@ fun MenuBoard(
     val showPaymentDialog = remember { mutableStateOf(false) }
 
     val showEditDialog = remember { mutableStateOf(false) }
-    val focusedMenuItem = remember { mutableStateOf<Beverage?>(null) }
+    val focusedMenuItem = remember { mutableStateOf<Beverage>(menuEntityList.value[0][0].value) }
 
     if (showDialog.value)
-        MenuItemClickDialog(showEditDialog, focusedMenuItem.value, shoppingCart, showDialog)
+        MenuItemClickDialog(focusedMenuItem.value, shoppingCart, showDialog)
+    if (showEditDialog.value)
+        ShoppingcartEditDialog(focusedMenuItem, shoppingCart, showEditDialog)
     if (showPaymentDialog.value)
         PaymentDialog(shoppingCart, showPaymentDialog, transactionCompleted)
 
@@ -120,7 +124,7 @@ fun MenuBoard(
                                         focusedMenuItem.value = it.value
                                     }
                                     .requiredHeight(200.dp),
-                                data = it
+                                data = remember { mutableStateOf(it.value) }
                             )
                         }
                     }
@@ -144,7 +148,7 @@ fun MenuBoard(
                     .weight(2f)
                     .fillMaxHeight()
             ) {
-                items(shoppingCart.value) {
+                items(shoppingCart) {
                     MenuEntity(
                         isShoppingCart = true,
                         modifier = Modifier
@@ -153,10 +157,9 @@ fun MenuBoard(
                                 indication = rememberRipple(bounded = true)
                             ) {
                                 showEditDialog.value = true
-                                showDialog.value = true
-                                focusedMenuItem.value = it.value
+                                focusedMenuItem.value = it
                               },
-                        data = it
+                        data = mutableStateOf( it )
                     )
                 }
             }
@@ -175,8 +178,8 @@ fun MenuBoard(
             }
         ){
             var totalPrice: Long= 0
-            shoppingCart.value.forEach {data ->
-                totalPrice += ((data.value.price.value + data.value.optPrice) * data.value.quantity.value)
+            shoppingCart.forEach {data ->
+                totalPrice += ((data.price.value + data.optPrice) * data.quantity.value)
             }
             Text(
                 color = Color.Black,

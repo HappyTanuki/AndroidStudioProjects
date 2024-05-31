@@ -7,7 +7,7 @@ data class MenuEntityDataClass(
     val name: String,
     val id: Int
 )
-interface Beverage: Cloneable {
+interface Beverage {
     val dataClass: MenuEntityDataClass
     val imgURL: String
     val name: MutableState<List<String>>
@@ -17,9 +17,6 @@ interface Beverage: Cloneable {
     val optPrice: Int
     val options: MutableList<Beverage>
         get() = mutableListOf<Beverage>()
-    public override fun clone(): Beverage {
-        return super.clone() as Beverage
-    }
 }
 data class Coffee(
     override var dataClass: MenuEntityDataClass,

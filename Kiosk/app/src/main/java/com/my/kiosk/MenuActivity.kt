@@ -1,6 +1,7 @@
 package com.my.kiosk
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.my.kiosk.layout.DelivaryOrStoreSelectSplash
 import com.my.kiosk.layout.MenuBoard
 
 class MenuActivity : ComponentActivity() {
@@ -997,15 +999,29 @@ class MenuActivity : ComponentActivity() {
         )
 
         val transactionCompleted = mutableStateOf<Boolean>(false)
+        val showOrdertypeSelectionScreen = mutableStateOf<Boolean>(true)
+        var firstLaunched = true
 
         setContent {
-            val shoppingCart: MutableState<List<MutableState<Beverage>>> = remember {
-                mutableStateOf(listOf())
-            }
+            var shoppingCart: MutableList<Beverage> = remember { mutableListOf() }
 
             LaunchedEffect(transactionCompleted.value) {
-                shoppingCart.value = listOf<MutableState<Beverage>>()
+                if (!firstLaunched) {
+                    Toast.makeText(
+                        applicationContext,
+                        "결제가 완료되었습니다. 카운터에서 음료를 받아주세요",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    shoppingCart.clear()
+                    showOrdertypeSelectionScreen.value = true
+                }
+                else {
+                    firstLaunched = false
+                }
             }
+
+            if (showOrdertypeSelectionScreen.value)
+                DelivaryOrStoreSelectSplash(showOrdertypeSelectionScreen)
 
             Surface(
                 color = MaterialTheme.colorScheme.background,
