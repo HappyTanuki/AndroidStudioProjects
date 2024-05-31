@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -17,9 +20,9 @@ import com.my.kiosk.Beverage
 
 @Composable
 fun MenuEntity(
-    isShoppingCart: Boolean = false,
     modifier: Modifier = Modifier,
-    data: MutableState<Beverage>
+    data: MutableState<Beverage>,
+    isShoppingCart: Boolean = false
     ) {
     Column(
         modifier = modifier
@@ -28,14 +31,18 @@ fun MenuEntity(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        var name = mutableStateOf<String>("")
+        data.value.name.value.forEach {
+            name.value+=it
+        }
         AsyncImage(
             modifier = Modifier
                 .weight(3f),
             model = data.value.imgURL,
-            contentDescription = data.value.name.value
+            contentDescription = name.value
         )
         Text(
-            text = data.value.name.value,
+            text = name.value,
             fontSize = 10.sp,
             modifier = Modifier
                 .weight(1f)
@@ -64,19 +71,4 @@ fun MenuEntity(
 //@Preview(showBackground = true)
 //@Composable
 //fun MenuEntityPreview() {
-//    MenuEntity(
-//        modifier = Modifier
-//            .requiredSize(100.dp, 150.dp),
-//        MenuEntityData(
-//            MenuEntityDataClass(
-//                "class1",
-//                0
-//            ),
-//            true,
-//            "R.drawable.profile",
-//            "HappyTanuki",
-//            10000,
-//            true
-//        )
-//    )
 //}

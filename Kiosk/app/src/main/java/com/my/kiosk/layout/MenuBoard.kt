@@ -35,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.my.kiosk.Beverage
 import com.my.kiosk.MenuEntityDataClass
@@ -46,7 +47,9 @@ import kotlin.time.times
 fun MenuBoard(
     menuClass: List<MenuEntityDataClass>,
     menuEntityList: MutableState<List<MutableList<MutableState<Beverage>>>>,
-    shoppingCart: MutableState<List<MutableState<Beverage>>>) {
+    shoppingCart: MutableState<List<MutableState<Beverage>>>,
+    transactionCompleted: MutableState<Boolean>
+) {
     val pagerState = rememberPagerState(
         pageCount = { menuClass.size },
         initialPage = 0
@@ -54,11 +57,15 @@ fun MenuBoard(
     val coroutineScope = rememberCoroutineScope()
 
     val showDialog = remember { mutableStateOf(false) }
+    val showPaymentDialog = remember { mutableStateOf(false) }
+
     val showEditDialog = remember { mutableStateOf(false) }
     val focusedMenuItem = remember { mutableStateOf<Beverage?>(null) }
 
     if (showDialog.value)
         MenuItemClickDialog(showEditDialog, focusedMenuItem.value, shoppingCart, showDialog)
+    if (showPaymentDialog.value)
+        PaymentDialog(shoppingCart, showPaymentDialog, transactionCompleted)
 
     Column(
         modifier = Modifier
@@ -74,7 +81,6 @@ fun MenuBoard(
                 edgePadding = 0.dp,
                 selectedTabIndex = pagerState.currentPage,
                 modifier = Modifier
-                    .padding(0.dp, 10.dp)
             ) {
                 menuClass.forEachIndexed { index, title ->
                     Tab(
@@ -106,7 +112,10 @@ fun MenuBoard(
                         if (it.value.dataClass.id == page) {
                             MenuEntity(
                                 modifier = Modifier
-                                    .clickable {
+                                    .clickable(
+                                        interactionSource = remember { MutableInteractionSource() },
+                                        indication = rememberRipple(bounded = true)
+                                    ) {
                                         showDialog.value = true
                                         focusedMenuItem.value = it.value
                                     }
@@ -127,7 +136,8 @@ fun MenuBoard(
             Text (
                 text = "장바구니",
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                textAlign = TextAlign.Center
             )
             LazyRow(
                 modifier = Modifier
@@ -161,11 +171,12 @@ fun MenuBoard(
                 .weight(0.7f)
                 .fillMaxWidth(),
             onClick = {
+                showPaymentDialog.value = true
             }
         ){
             var totalPrice: Long= 0
             shoppingCart.value.forEach {data ->
-                totalPrice += (data.value.price.value + data.value.optPrice) * data.value.quantity.value
+                totalPrice += ((data.value.price.value + data.value.optPrice) * data.value.quantity.value)
             }
             Text(
                 color = Color.Black,
@@ -177,88 +188,4 @@ fun MenuBoard(
 //@Preview(showBackground = true)
 //@Composable
 //fun MenuPreview() {
-//    val menuEntityDataClass = mutableListOf<MenuEntityDataClass>()
-//    val _menuEntityDataClassNames = listOf<String>(
-//        "페이지1",
-//        "페이지2",
-//        "페이지3",
-//        "페이지4",
-//        "페이지5",
-//        "페이지6",
-//        "페이지7",
-//        "페이지8",
-//        "페이지9",
-//        "페이지10",
-//    )
-//    _menuEntityDataClassNames.forEachIndexed{ i, item ->
-//        menuEntityDataClass.add(
-//            MenuEntityDataClass(
-//                item,
-//                i
-//            )
-//        )
-//    }
-//    val menuEntityList: MutableState<List<MutableList<MenuEntityData>>> = remember { mutableStateOf(
-//        List<MutableList<MenuEntityData>>(_menuEntityDataClassNames.size) {
-//            when(it) {
-//                0 ->
-//                    mutableListOf<MenuEntityData>(
-//                        MenuEntityData(
-//                            menuEntityDataClass[0],
-//                            true,
-//                            "R.drawable.profile",
-//                            "씨솔트 카라멜 콜드 브루",
-//                            0
-//                        )
-//                    )
-//                1 ->
-//                    mutableListOf<MenuEntityData>(
-//                        MenuEntityData(
-//                            menuEntityDataClass[1],
-//                            true,
-//                            "R.drawable.profile",
-//                            "시그니처 더 블랙 콜드 브루",
-//                            0
-//                        )
-//                    )
-//                else ->
-//                    mutableListOf<MenuEntityData>(
-//                        MenuEntityData(
-//                            menuEntityDataClass[1],
-//                            true,
-//                            "R.drawable.profile",
-//                            "시그니처 더 블랙 콜드 브루",
-//                            0
-//                        )
-//                    )
-//            }
-//        }
-//    )}
-//
-//    menuEntityList.value[0].add( MenuEntityData(
-//        menuEntityDataClass[0],
-//        true,
-//        "R.drawable.profile",
-//        "시그니처 더 블랙 콜드 브루",
-//        0
-//    ))
-//    val shoppingcart: MutableState<List<MenuEntityData>> = remember{ mutableStateOf(
-//        List(10) {
-//            MenuEntityData(
-//                MenuEntityDataClass(
-//                    "",
-//                    0
-//                ),
-//                true,
-//                "R.drawable.profile",
-//                "",
-//                0
-//            )
-//        })
-//    }
-//    MenuBoard(
-//        menuEntityDataClass,
-//        menuEntityList,
-//        shoppingcart
-//    )
 //}

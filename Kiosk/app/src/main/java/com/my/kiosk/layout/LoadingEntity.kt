@@ -41,15 +41,4 @@ fun LoadingEntity(
 //@Preview(showBackground = true)
 //@Composable
 //fun LoadingEntityPreview() {
-//    MenuEntity( data = MenuEntityData(
-//        MenuEntityDataClass(
-//            "class1",
-//            0
-//        ),
-//        false,
-//        "R.drawable.profile",
-//        "HappyTanuki",
-//        10000,
-//        true,)
-//    )
 //}

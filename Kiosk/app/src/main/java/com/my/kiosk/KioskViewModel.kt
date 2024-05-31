@@ -7,27 +7,10 @@ data class MenuEntityDataClass(
     val name: String,
     val id: Int
 )
-//data class MenuOptionsData(
-//    val name: String
-//)
-//interface MenuEntityData {
-//    var dataClass: MenuEntityDataClass
-//    var loaded : Boolean
-//    val url: String
-//    val name: String
-//    val price: Long
-//    fun menuOptions(
-//        dataClass: MenuEntityDataClass,
-//        loaded : Boolean,
-//        url: String,
-//        name: String,
-//        price: Long
-//    ): List<MenuOptionsData>
-//}
 interface Beverage: Cloneable {
     val dataClass: MenuEntityDataClass
     val imgURL: String
-    val name: MutableState<String>
+    val name: MutableState<List<String>>
     var quantity: MutableState<Int>
     val price: MutableState<Int>
     var superBeverage: Beverage?
@@ -41,7 +24,7 @@ interface Beverage: Cloneable {
 data class Coffee(
     override var dataClass: MenuEntityDataClass,
     override var imgURL: String,
-    override val name: MutableState<String>,
+    override val name: MutableState<List<String>>,
     override var quantity: MutableState<Int>,
     override val price: MutableState<Int>,
     override var superBeverage: Beverage? = null,
@@ -77,9 +60,9 @@ abstract class BeverageDecorator(
 class BeverageAddPurl(
     override var superBeverage: Beverage?
 ): BeverageDecorator(superBeverage) {
-    override val name: MutableState<String>
+    override val name: MutableState<List<String>>
         get() {
-            return mutableStateOf("${superBeverage!!.name.value} 펄추가")
+            return mutableStateOf(superBeverage!!.name.value + listOf(" 펄추가"))
         }
     override val options: MutableList<Beverage>
         get() {
@@ -93,9 +76,9 @@ class BeverageAddPurl(
 class BeverageAddShot(
     override var superBeverage: Beverage?
 ): BeverageDecorator(superBeverage) {
-    override val name: MutableState<String>
+    override val name: MutableState<List<String>>
         get() {
-            return mutableStateOf("${superBeverage!!.name.value} 샷추가")
+            return mutableStateOf(superBeverage!!.name.value + listOf(" 샷추가"))
         }
     override val options: MutableList<Beverage>
         get() {
@@ -109,9 +92,9 @@ class BeverageAddShot(
 class BeverageAddIce(
     override var superBeverage: Beverage?
 ): BeverageDecorator(superBeverage) {
-    override val name: MutableState<String>
+    override val name: MutableState<List<String>>
         get() {
-            return mutableStateOf("${superBeverage!!.name.value} 얼음추가")
+            return mutableStateOf(superBeverage!!.name.value + listOf(" 얼음추가"))
         }
     override val options: MutableList<Beverage>
         get() {
@@ -125,9 +108,9 @@ class BeverageAddIce(
 class HotBeverage(
     override var superBeverage: Beverage?
 ): BeverageDecorator(superBeverage) {
-    override val name: MutableState<String>
+    override val name: MutableState<List<String>>
         get() {
-            return mutableStateOf("뜨거운 ${superBeverage!!.name.value}")
+            return mutableStateOf(listOf("뜨거운 ") + superBeverage!!.name.value)
         }
     override val options: MutableList<Beverage>
         get() {
@@ -155,10 +138,10 @@ fun beverageDecoratorRemover(
     if (beverage.superBeverage == null)
         return beverage
 
-    val curBeverage = beverageDecoratorRemover(beverage.superBeverage!!, beverageDecorator)
+    beverage.superBeverage = beverageDecoratorRemover(beverage.superBeverage!!, beverageDecorator)
 
-    return if (beverageDecoratorTypegetter(curBeverage) == beverageDecoratorTypegetter(beverageDecorator)) {
-        curBeverage
+    return if (beverageDecoratorTypegetter(beverage) == beverageDecoratorTypegetter(beverageDecorator)) {
+        beverage.superBeverage!!
     }
     else {
         beverage
@@ -171,11 +154,11 @@ fun searchBeverageDecorator(
     if (beverage.superBeverage == null)
         return beverage
 
-    val curBeverage = searchBeverageDecorator(beverage.superBeverage!!, beverageDecorator)
+    val nextBeverage = searchBeverageDecorator(beverage.superBeverage!!, beverageDecorator)
 
-    return if (curBeverage == null)
+    return if (nextBeverage == null)
         null
-    else if (beverageDecoratorTypegetter(curBeverage) == beverageDecoratorTypegetter(beverageDecorator))
+    else if (beverageDecoratorTypegetter(beverage) == beverageDecoratorTypegetter(beverageDecorator))
         null
     else
         beverage

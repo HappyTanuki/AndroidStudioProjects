@@ -1,11 +1,15 @@
 package com.my.kiosk.layout
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -61,6 +66,18 @@ fun MenuItemClickDialog(
         else {
             icedEnabled.value = false
             hotEnabled.value = true
+        }
+        if(searchBeverageDecorator(focusedItem, BeverageAddPurl(focusedItem)) == null) {
+            purlEnabled.value = true
+        }
+        else {
+            purlEnabled.value = false
+        }
+        if(searchBeverageDecorator(focusedItem, BeverageAddShot(focusedItem)) == null) {
+            shotEnabled.value = true
+        }
+        else {
+            shotEnabled.value = false
         }
         addItemQuantity = remember { mutableIntStateOf(focusedItem!!.quantity.value) }
         itemToAdd.value.quantity = addItemQuantity
@@ -179,7 +196,7 @@ fun MenuItemClickDialog(
                                 itemToAdd.value = HotBeverage(beverageDecoratorRemover(itemToAdd.value, BeverageAddIce(itemToAdd.value)))
                                 hotEnabled.value = true
                                 icedEnabled.value = false
-                            }, modifier = Modifier,
+                            },
                             shape = RoundedCornerShape(24.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.LightGray
@@ -189,17 +206,32 @@ fun MenuItemClickDialog(
                         }
                     }
                 }
-                Row {
+                Row(
+                    modifier = Modifier
+                        .requiredHeight(40.dp)
+                ) {
                     Button(
                         onClick = {
-                            if (itemToAdd.value.quantity.value <= 0)
+                            if (itemToAdd.value.quantity.value <= 1)
                                 return@Button
                             itemToAdd.value.quantity.value -= 1
                         }
                     ){
                         Text(text = "<")
                     }
-                    Text(text = "${itemToAdd.value.quantity.value}")
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .requiredWidth(40.dp),
+                        verticalArrangement = Arrangement.Center
+                        ) {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            text = "${itemToAdd.value.quantity.value}",
+                            textAlign = TextAlign.Center
+                        )
+                    }
                     Button(
                         onClick = {
                             itemToAdd.value.quantity.value += 1
@@ -246,6 +278,23 @@ fun MenuItemClickDialog(
                         Text("장바구니에 추가", fontSize = 16.sp)
                     }
                 }
+                if(edit.value) {
+                    Button(
+                        onClick = {
+                            val tempShoppingCart = shoppingCart.value.toMutableList()
+
+                            val item = tempShoppingCart.find {
+                                it.value == itemToAdd
+                            }
+                            tempShoppingCart.remove(item)
+                            shoppingCart.value = tempShoppingCart.toList()
+                            showDialog.value = false
+                            edit.value = false
+                        }
+                    ) {
+                        Text("삭제")
+                    }
+                }
                 if(!((icedEnabled.value && !hotEnabled.value) || (!icedEnabled.value && hotEnabled.value))) {
                     Text("핫 또는 아이스를 선택해주세요", fontSize = 16.sp)
                 }
@@ -256,17 +305,4 @@ fun MenuItemClickDialog(
 //@Preview(showBackground = true)
 //@Composable
 //fun MenuItemClickDialogPreview() {
-//    var _texp = remember{ mutableStateOf(
-//        MenuEntityData(
-//            MenuEntityDataClass(
-//                "콜드브루",
-//                0
-//            ),
-//            true,
-//            "https://image.istarbucks.co.kr/upload/store/skuimg/2024/04/[9200000004544]_20240423124241716.jpg",
-//            "씨솔트 카라멜 콜드 브루",
-//            12457,
-//            true)
-//    ) }
-//    MenuItemClickDialog(_texp)
 //}
