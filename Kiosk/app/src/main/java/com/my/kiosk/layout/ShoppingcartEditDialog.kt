@@ -1,5 +1,6 @@
 package com.my.kiosk.layout
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,6 +39,7 @@ import com.my.kiosk.HotBeverage
 import com.my.kiosk.beverageDecoratorRemover
 import com.my.kiosk.searchBeverageDecorator
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun ShoppingcartEditDialog(
     focusedItem: MutableState<Beverage>,
@@ -75,7 +77,7 @@ fun ShoppingcartEditDialog(
                     isShoppingCart = true,
                     modifier = Modifier
                         .requiredHeight(200.dp),
-                    data = focusedItem
+                    data = mutableStateOf(focusedItem.value)
                 )
                 Button(
                     onClick = {
