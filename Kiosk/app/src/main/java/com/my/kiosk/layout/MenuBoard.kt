@@ -173,9 +173,7 @@ fun MenuBoard(
             modifier = Modifier
                 .weight(0.7f)
                 .fillMaxWidth(),
-            onClick = {
-                showPaymentDialog.value = true
-            }
+            onClick = {onClickCallback(showPaymentDialog)}
         ){
             var totalPrice: Long= 0
             shoppingCart.forEach {data ->
@@ -187,6 +185,10 @@ fun MenuBoard(
             )
         }
     }
+}
+
+fun onClickCallback(state: MutableState<Boolean>) {
+    state.value = true
 }
 //@Preview(showBackground = true)
 //@Composable
